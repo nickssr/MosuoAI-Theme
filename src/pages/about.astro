@@ -1,0 +1,225 @@
+---
+import { Sparkles, Hand, Target, BookOpen, HandHelping, Bot, FlaskConical, Rocket, User, Mail, Newspaper, FolderGit2, Library, Info } from 'lucide-astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="关于" description="关于摩索 AI - 记录 AI Agent 开发的探索之路">
+  <article class="about">
+    <header class="header">
+      <div class="logo-section">
+        <img src="/logo.svg" alt="摩索 AI Logo" class="about-logo" />
+        <h1>关于 摩索 AI</h1>
+      </div>
+    </header>
+
+    <section class="section">
+      <Hand size={32} class="section-icon" />
+      <h2>品牌寓意</h2>
+      <p class="story-text">
+        "摩索"二字，取自"揣摩技术，探索前沿"。我们希望成为 AI Agent 时代每一位开发者的同行者与索引者。
+      </p>
+    </section>
+
+    <section class="section">
+      <Hand size={32} class="section-icon" />
+      <h2>这里是哪里？</h2>
+      <p>
+        摩索 AI 是一个记录 AI Agent 开发探索之路的地方。这里分享 OpenClaw、Hermes Agent
+        等工具的实战经验、教程和心得。
+      </p>
+    </section>
+
+    <section class="section">
+      <Target size={32} class="section-icon" />
+      <h2>为什么要做这个？</h2>
+      <p>
+        AI Agent 是个新领域，文档少、坑多。我在摸索过程中踩了不少坑，也积累了一些经验。
+        把这些记录下来，希望能帮到同样在探索的人。
+      </p>
+    </section>
+
+    <section class="section">
+      <BookOpen size={32} class="section-icon" />
+      <h2>内容方向</h2>
+      <div class="grid">
+        <div class="card">
+          <Newspaper size={32} class="card-icon" />
+          <h3>资讯</h3>
+          <p>AI Agent 领域最新动态和前沿资讯</p>
+        </div>
+        <div class="card">
+          <FlaskConical size={32} class="card-icon" />
+          <h3>评测</h3>
+          <p>各种 AI 开发工具的深度评测和对比</p>
+        </div>
+        <div class="card">
+          <BookOpen size={32} class="card-icon" />
+          <h3>教程</h3>
+          <p>OpenClaw、Hermes Agent 等工具的实战教程</p>
+        </div>
+        <div class="card">
+          <FolderGit2 size={32} class="card-icon" />
+          <h3>开源</h3>
+          <p>开源项目分享和代码实战</p>
+        </div>
+        <div class="card">
+          <Library size={32} class="card-icon" />
+          <h3>资源</h3>
+          <p>精选学习资源和工具推荐</p>
+        </div>
+        <div class="card">
+          <Info size={32} class="card-icon" />
+          <h3>关于</h3>
+          <p>关于我们和联系方式</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <User size={32} class="section-icon" />
+      <h2>关于作者</h2>
+      <p>
+        老李，一个在 AI Agent 领域摸索的开发者。有糖尿病，总是熬夜，做事有点拖拉，
+        但认真起来会忘记时间。
+      </p>
+    </section>
+
+    <section class="section">
+      <Mail size={32} class="section-icon" />
+      <h2>联系我</h2>
+      <p>
+        有问题或建议？欢迎交流。
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .about {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .header {
+    text-align: center;
+    padding: 3rem 0;
+    margin-bottom: 3rem;
+  }
+
+  .logo-section {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .about-logo {
+    height: 80px;
+    width: auto;
+    margin-bottom: 1rem;
+  }
+
+  .header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .section {
+    margin-bottom: 2.5rem;
+    padding: 2rem;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-accent) 100%);
+    opacity: 0.5;
+  }
+
+  .section-icon {
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+  }
+
+  .section h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--color-text-primary);
+  }
+
+  .section p {
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+    font-size: 1rem;
+  }
+
+  .story-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .card {
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md), 0 0 20px rgba(124, 58, 237, 0.15);
+  }
+
+  .card-icon {
+    color: var(--color-primary);
+    margin-bottom: 0.75rem;
+  }
+
+  .card h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--color-text-primary);
+  }
+
+  .card p {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 768px) {
+    .header h1 {
+      font-size: 2rem;
+    }
+
+    .section {
+      padding: 1.5rem;
+    }
+
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

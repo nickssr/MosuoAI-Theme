@@ -1,0 +1,159 @@
+---
+import { Calendar, Clock, ArrowLeft, Tag } from 'lucide-astro';
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const tutorials = await getCollection('tutorials');
+  return tutorials.map((tutorial) => ({
+    params: { slug: tutorial.id },
+    props: { tutorial },
+  }));
+}
+
+const { tutorial } = Astro.props;
+const { Content } = await render(tutorial);
+
+// 计算阅读时间（中文字数 / 300 字每分钟）
+function calculateReadingTime(content: string): number {
+  // 移除代码块和 frontmatter
+  const text = content.replace(/```[\s\S]*?```/g, '').replace(/---[\s\S]*?---/g, '');
+  // 计算中文字符数（包括标点）
+  const chineseChars = (text.match(/[\u4e00-\u9fff]/g) || []).length;
+  // 计算英文单词数
+  const englishWords = (text.match(/[a-zA-Z]+/g) || []).length;
+  // 总字数估算
+  const totalChars = chineseChars + englishWords;
+  // 阅读时间（向上取整）
+  return Math.ceil(totalChars / 300) || 1;
+}
+
+const readingTime = calculateReadingTime(tutorial.body);
+---
+
+<BaseLayout
+  title={tutorial.data.title}
+  description={tutorial.data.description}
+  image={tutorial.data.heroImage}
+>
+  <article class="article-page tutorial-page">
+    <header class="article-header tutorial-header">
+      <div class="header-glow"></div>
+      <a href="/tutorials" class="back-link">
+        <ArrowLeft size={16} />
+        返回教程列表
+      </a>
+      <h1 class="article-title">{tutorial.data.title}</h1>
+      <p class="article-description">{tutorial.data.description}</p>
+      <div class="article-meta">
+        <time datetime={tutorial.data.pubDate.toISOString()} class="meta-item">
+          <Calendar size={14} />
+          {tutorial.data.pubDate.toLocaleDateString('zh-CN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </time>
+        <span class="meta-divider">•</span>
+        <span class="meta-item">
+          <Clock size={14} />
+          {readingTime} 分钟阅读
+        </span>
+      </div>
+      {tutorial.data.tags && tutorial.data.tags.length > 0 && (
+        <div class="article-tags">
+          {tutorial.data.tags.map((tag) => (
+            <span class="article-tag tutorial-tag">
+              <Tag size={12} />
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+    </header>
+
+    <div class="article-content-wrapper">
+      <div class="article-body">
+        <Content />
+      </div>
+      <aside class="article-sidebar">
+          <h3 class="sidebar-title">热门文章</h3>
+          <ul class="popular-list">
+            <li><a href="/news/2026-04-22-openai-agents-sdk-evolution" class="popular-link">OpenAI 发布 Agents SDK 重大更新</a></li>
+            <li><a href="/tutorials/2026-04-22-ai-agent-getting-started" class="popular-link">AI Agent 开发入门指南</a></li>
+            <li><a href="/reviews/cursor-ai-review" class="popular-link">Cursor AI 编辑器评测</a></li>
+          </ul>
+        </div>
+          <h3 class="sidebar-title">热门标签</h3>
+          <div class="tag-cloud">
+            {tutorial.data.tags?.map((tag) => (
+              <a href={`/tags/${tag}`} class="tag-pill">
+                {tag}
+              </a>
+            ))}
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="article-footer">
+      <a href="/tutorials" class="back-link">
+        <ArrowLeft size={16} />
+        返回教程列表
+      </a>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  /* 教程页特有样式：紫色主题和光晕效果 */
+  .tutorial-header {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header-glow {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.1) 0%, transparent 70%);
+    top: -100px;
+    right: -100px;
+    pointer-events: none;
+  }
+
+  .article-description {
+    color: var(--color-text-secondary);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: var(--space-5);
+  }
+
+  /* 教程页标签使用紫色主题 */
+  .tutorial-tag {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(139, 92, 246, 0.1) 100%);
+    color: #a78bfa;
+    border-color: rgba(124, 58, 237, 0.3);
+  }
+
+  /* 教程页侧边栏使用紫色主题 */
+  .article-sidebar .tag-pill:hover {
+    color: #a78bfa;
+    border-color: #a78bfa;
+    background: rgba(124, 58, 237, 0.1);
+  }
+
+  .article-sidebar .popular-link:hover {
+    color: #a78bfa;
+    background: rgba(124, 58, 237, 0.06);
+  }
+
+  .article-sidebar .resource-link:hover {
+    color: #a78bfa;
+    background: rgba(124, 58, 237, 0.05);
+  }
+
+  .article-sidebar .resource-link:hover::before {
+    background: #a78bfa;
+  }
+</style>

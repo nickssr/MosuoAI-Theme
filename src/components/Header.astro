@@ -1,0 +1,343 @@
+---
+import { Search, Sun, Moon, Menu, X } from 'lucide-astro';
+import { siteConfig } from '../config.mjs';
+
+const navLinks = siteConfig.navLinks.filter(link => link.href !== '/');
+---
+
+<header class="header">
+  <div class="nav">
+    <a href="/" class="logo">
+      <img src="/logo.svg" alt="MosuoAI Logo" class="logo-img" />
+      <span class="logo-text">MosuoAI</span>
+    </a>
+
+    <nav class="nav-links">
+      {navLinks.map((link) => (
+        <a href={link.href} class="nav-link">
+          {link.label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="nav-actions">
+      <!-- 搜索按钮 -->
+      <button class="search-btn" onclick="openSearch()" aria-label="搜索">
+        <Search size={18} class="search-icon" />
+      </button>
+
+      <!-- 主题切换按钮 -->
+      <button class="theme-toggle" id="theme-toggle" aria-label="切换主题">
+        <Sun size={18} class="sun-icon" />
+        <Moon size={18} class="moon-icon" />
+      </button>
+    </div>
+
+    <button class="menu-toggle" aria-label="切换菜单">
+      <Menu size={24} class="hamburger-icon menu-open" />
+      <X size={24} class="hamburger-icon menu-close" />
+    </button>
+  </div>
+
+  <div class="mobile-menu">
+    {navLinks.map((link) => (
+      <a href={link.href} class="mobile-link">
+        {link.label}
+      </a>
+    ))}
+  </div>
+</header>
+
+<script>
+  const menuToggle = document.querySelector('.menu-toggle');
+  const mobileMenu = document.querySelector('.mobile-menu');
+  const header = document.querySelector('.header');
+
+  menuToggle?.addEventListener('click', () => {
+    menuToggle.classList.toggle('active');
+    mobileMenu?.classList.toggle('open');
+    header?.classList.toggle('mobile-menu-open');
+  });
+
+  // 点击链接后关闭菜单
+  document.querySelectorAll('.mobile-link').forEach((link) => {
+    link.addEventListener('click', () => {
+      menuToggle?.classList.remove('active');
+      mobileMenu?.classList.remove('open');
+      header?.classList.remove('mobile-menu-open');
+    });
+  });
+
+  // 主题切换功能
+  const themeToggle = document.getElementById('theme-toggle') as HTMLButtonElement;
+  const html = document.documentElement;
+
+  // 检查本地存储的主题
+  const savedTheme = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  if (savedTheme === 'light') {
+    html.setAttribute('data-theme', 'light');
+  } else if (savedTheme === 'dark' || prefersDark) {
+    html.setAttribute('data-theme', 'dark');
+  }
+
+  themeToggle?.addEventListener('click', () => {
+    const currentTheme = html.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+  });
+</script>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--color-bg-glass);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-6);
+  }
+
+  /* Logo */
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--color-text-primary);
+    transition: color var(--transition-fast);
+  }
+
+  .logo:hover {
+    color: var(--color-primary);
+  }
+
+  .logo-img {
+    height: 24px;
+    width: auto;
+    transition: transform var(--transition-fast), filter var(--transition-fast);
+  }
+
+  .logo:hover .logo-img {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+  }
+
+  .logo-text {
+    transition: color var(--transition-fast);
+  }
+
+  .logo:hover .logo-text {
+    color: var(--color-primary);
+  }
+
+  /* Nav Links */
+  .nav-links {
+    display: flex;
+    gap: var(--space-8);
+  }
+
+  .nav-link {
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: var(--space-2) 0;
+    position: relative;
+    transition: color var(--transition-fast);
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--color-primary);
+    transition: width var(--transition-base);
+  }
+
+  .nav-link:hover {
+    color: var(--color-text-primary);
+  }
+
+  .nav-link:hover::after {
+    width: 100%;
+  }
+
+  /* Nav Actions - 搜索和主题切换 */
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  /* 搜索按钮 */
+  .search-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .search-btn:hover {
+    border-color: var(--color-primary);
+    background: var(--color-bg-secondary);
+  }
+
+  .search-icon {
+    color: var(--color-text-secondary);
+    transition: color var(--transition-fast);
+  }
+
+  .search-btn:hover .search-icon {
+    color: var(--color-primary);
+  }
+
+  /* 主题切换 */
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--color-primary);
+    background: var(--color-bg-secondary);
+  }
+
+  .sun-icon,
+  .moon-icon {
+    color: var(--color-text-secondary);
+    transition: all var(--transition-fast);
+  }
+
+  .sun-icon {
+    display: none;
+  }
+
+  .moon-icon {
+    display: block;
+  }
+
+  /* 亮色模式下的图标显示 */
+  :global([data-theme="light"]) .sun-icon {
+    display: block;
+  }
+
+  :global([data-theme="light"]) .moon-icon {
+    display: none;
+  }
+
+  /* 汉堡菜单按钮 */
+  .menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: var(--space-2);
+    position: relative;
+  }
+
+  .hamburger-icon {
+    color: var(--color-text-primary);
+    transition: opacity var(--transition-fast);
+  }
+
+  .menu-open {
+    display: block;
+  }
+
+  .menu-close {
+    display: none;
+  }
+
+  /* 汉堡菜单激活状态 */
+  .menu-toggle.active .menu-open {
+    display: none;
+  }
+
+  .menu-toggle.active .menu-close {
+    display: block;
+  }
+
+  /* 移动端菜单 */
+  .mobile-menu {
+    display: none;
+    flex-direction: column;
+    padding: 0 var(--space-6) var(--space-6);
+    gap: var(--space-2);
+    border-top: 1px solid var(--color-border);
+    margin-top: var(--space-4);
+  }
+
+  .mobile-menu.open {
+    display: flex;
+  }
+
+  .mobile-link {
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    transition: background var(--transition-fast), color var(--transition-fast);
+  }
+
+  .mobile-link:hover {
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+  }
+
+  /* 移动端响应式 */
+  @media (max-width: 768px) {
+    .nav-links {
+      display: none;
+    }
+
+    .menu-toggle {
+      display: flex;
+    }
+
+    .nav {
+      padding: var(--space-3) var(--space-4);
+    }
+
+    .logo-img {
+      height: 32px;
+    }
+
+    .logo-text {
+      font-size: 1.1rem;
+    }
+  }
+</style>

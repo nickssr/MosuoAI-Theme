@@ -1,0 +1,64 @@
+---
+import { Calendar } from 'lucide-astro';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import PopularArticles from '../../components/PopularArticles.astro';
+
+const allNews = await getCollection('news', ({ data }) => !data.draft);
+const sortedNews = allNews.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const allTags = Array.from(new Set(sortedNews.flatMap((a) => a.data.tags ?? [])));
+const defaultThumb = '/og-default.svg';
+---
+
+<BaseLayout title="资讯" description="AI Agent 领域最新资讯和动态">
+  <PageHero title="资讯" description="追踪 AI Agent 领域的最新动态" themeColor="59, 130, 246" />
+
+  <div class="page-layout">
+    <main class="main-content">
+      <div class="breadcrumb">首页 &gt; 资讯</div>
+      <div class="article-list">
+        {sortedNews.map((news) => (
+          <article class="article-card">
+            <a href={`/news/${news.id}`} class="article-card-link"></a>
+            <div class="article-card-thumb">
+              <img
+                src={news.data.heroImage || defaultThumb}
+                alt={news.data.title}
+                loading="lazy"
+              />
+            </div>
+            <div class="article-card-body">
+              <div class="article-card-meta">
+                <span class="category-badge" style={{ 'background': '#3b82f620', 'color': '#3b82f6' }}>
+                  资讯
+                </span>
+                <span class="date-text">
+                  <Calendar size={12} />
+                  {news.data.pubDate.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}
+                </span>
+              </div>
+              <h3 class="article-card-title">{news.data.title}</h3>
+              <p class="article-card-desc">{news.data.description}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </main>
+
+    <aside class="sidebar">
+      <PopularArticles />
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">热门标签</h3>
+        <div class="tag-cloud">
+          {allTags.slice(0, 20).map((tag) => (
+            <a href={`/tags/${tag}`} class="tag-pill">
+              {tag}
+            </a>
+          ))}
+        </div>
+      </div>
+    </aside>
+  </div>
+</BaseLayout>
